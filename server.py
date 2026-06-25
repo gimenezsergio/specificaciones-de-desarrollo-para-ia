@@ -34,23 +34,42 @@ class SecureProxyHandler(SimpleHTTPRequestHandler):
                 }).encode('utf-8'))
                 return
             
-            # Target Gemini API endpoint (2.5-flash)
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
-            
-            req = urllib.request.Request(
-                url,
-                data=post_data,
-                headers={'Content-Type': 'application/json'}
-            )
-            
+            # Try gemini-2.5-flash first, fallback to gemini-2.0-flash if overloaded
+            primary_model = "gemini-2.5-flash"
+            fallback_model = "gemini-2.0-flash"
+
+            def make_request(model_name):
+                target_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
+                return urllib.request.Request(
+                    target_url,
+                    data=post_data,
+                    headers={'Content-Type': 'application/json'}
+                )
+
             try:
-                # Set a 30-second timeout to prevent requests from hanging indefinitely
-                with urllib.request.urlopen(req, timeout=30) as response:
-                    res_data = response.read()
-                    self.send_response(200)
-                    self.send_header('Content-Type', 'application/json')
-                    self.end_headers()
-                    self.wfile.write(res_data)
+                try:
+                    req = make_request(primary_model)
+                    with urllib.request.urlopen(req, timeout=30) as response:
+                        res_data = response.read()
+                        self.send_response(200)
+                        self.send_header('Content-Type', 'application/json')
+                        self.end_headers()
+                        self.wfile.write(res_data)
+                        return
+                except urllib.error.HTTPError as e:
+                    # 429 = Rate Limit, 503 = Service Unavailable (High Demand)
+                    if e.code in (429, 503):
+                        print(f"[Server] Model {primary_model} overloaded (HTTP {e.code}). Retrying with {fallback_model}...")
+                        req_fallback = make_request(fallback_model)
+                        with urllib.request.urlopen(req_fallback, timeout=30) as response:
+                            res_data = response.read()
+                            self.send_response(200)
+                            self.send_header('Content-Type', 'application/json')
+                            self.end_headers()
+                            self.wfile.write(res_data)
+                            return
+                    else:
+                        raise e
             except urllib.error.HTTPError as e:
                 err_data = e.read()
                 self.send_response(e.code)
