@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ProjectSpec Pro</title>
+    <style>
+    :root {
+      --color-bg:#fff; --color-surface:#f7f7f9; --color-elevated:#fff; --color-border:#e2e2e8;
+      --color-text:#111; --color-muted:#666; --color-soft:#8a8a92; --color-primary:#000; --color-primary-hover:#333;
+      --color-ok:#0a7f37; --color-warn:#a16207; --color-error:#b42318; --color-info:#175cd3;
+      --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      --radius:10px; --radius-sm:6px; --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:24px; --space-6:32px;
+      --shadow:0 8px 30px rgba(16,24,40,.06);
+    }
+    *{box-sizing:border-box;margin:0;padding:0} body{font-family:var(--font);font-size:14px;line-height:1.5;background:var(--color-bg);color:var(--color-text);-webkit-font-smoothing:antialiased}
+    h1,h2,h3{font-weight:650;letter-spacing:-.025em} p{color:var(--color-muted);margin:0 0 var(--space-4)}
+    button,input,textarea,select{font:inherit}.hidden{display:none!important}
+    .header{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:14px var(--space-6);border-bottom:1px solid var(--color-border);background:rgba(255,255,255,.92);backdrop-filter:blur(12px)}
+    .brand{font-size:16px;font-weight:700;cursor:pointer}.header-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .main{display:flex;min-height:calc(100vh - 57px)}.sidebar{display:none;width:280px;flex:0 0 280px;border-right:1px solid var(--color-border);background:var(--color-surface);padding:var(--space-5) 0;position:sticky;top:57px;height:calc(100vh - 57px);overflow:auto}
+    @media (min-width:860px){.sidebar{display:block}.mobile-stepper{display:none!important}}
+    .content{width:100%;max-width:980px;margin:0 auto;padding:var(--space-6)}
+    @media (max-width:640px){.header{padding:12px var(--space-4)}.content{padding:var(--space-5) var(--space-4)}.header-actions .secondary-small{display:none}}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:var(--radius-sm);border:1px solid transparent;cursor:pointer;padding:8px 14px;font-weight:550;background:none;transition:.18s ease}.btn:focus-visible,.chip:focus-visible,.tab:focus-visible,.side-item:focus-visible{outline:2px solid #111;outline-offset:2px}
+    .btn-primary{background:var(--color-primary);color:#fff}.btn-primary:hover{background:var(--color-primary-hover)}.btn-secondary{background:var(--color-elevated);border-color:var(--color-border);color:var(--color-text)}.btn-secondary:hover{border-color:#999}.btn-ghost{color:var(--color-muted)}.btn-ghost:hover{background:var(--color-surface);color:var(--color-text)}
+    .hero{text-align:center;padding:72px 16px}.hero h1{font-size:clamp(32px,5vw,58px);line-height:1.02;margin-bottom:12px}.hero p{font-size:17px;max-width:680px;margin:0 auto 28px}.hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+    .side-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 22px;color:var(--color-muted);cursor:pointer;border:0;background:transparent;width:100%;text-align:left}.side-item.active{background:#e9e9ee;color:#111;font-weight:650}.side-item.done .dot{background:var(--color-ok)}.dot{width:8px;height:8px;border-radius:999px;background:#d0d0d7;flex:0 0 8px}
+    .mobile-stepper{display:flex;gap:8px;overflow:auto;padding-bottom:10px;margin-bottom:18px}.mobile-step{height:6px;min-width:36px;border-radius:999px;background:#ddd}.mobile-step.active{background:#111}.mobile-step.done{background:var(--color-ok)}
+    .progress{height:6px;background:var(--color-surface);border-radius:999px;overflow:hidden;margin-bottom:24px}.progress-fill{height:100%;background:#111;transition:.25s ease}
+    .grid{display:grid;gap:18px}.two-col{grid-template-columns:1fr}@media(min-width:920px){.two-col{grid-template-columns:1.3fr .7fr}}
+    .card{background:var(--color-elevated);border:1px solid var(--color-border);border-radius:var(--radius);box-shadow:var(--shadow);padding:var(--space-5)}.flat-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius);padding:var(--space-4)}
+    .field{margin-bottom:22px}.label-row{display:flex;justify-content:space-between;gap:10px;margin-bottom:6px}.label{display:block;font-weight:650}.help{font-size:12px;color:var(--color-soft)}.req{font-size:12px;color:var(--color-error)}
+    .input,.textarea,.select{width:100%;border:1px solid var(--color-border);border-radius:var(--radius-sm);background:#fff;color:#111;padding:10px 12px;transition:.18s}.textarea{min-height:116px;resize:vertical}.input:focus,.textarea:focus,.select:focus{outline:none;border-color:#111;box-shadow:0 0 0 3px rgba(0,0,0,.06)}.field.error .input,.field.error .textarea,.field.error .select{border-color:var(--color-error)}
+    .field-message{font-size:12px;margin-top:6px;color:var(--color-error)}.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.chip{border:1px solid var(--color-border);background:var(--color-surface);border-radius:999px;padding:5px 11px;font-size:12px;color:var(--color-muted);cursor:pointer}.chip:hover{border-color:#111;color:#111}
+    .score-wrap{display:flex;align-items:center;gap:16px}.score-ring{width:78px;height:78px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#111 var(--score),#ececf1 0)}.score-ring span{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:#fff;font-weight:800}.score-list{list-style:none;display:grid;gap:8px;margin-top:14px}.score-list li{font-size:13px;color:var(--color-muted)}
+    .notice{border-left:3px solid var(--color-info);background:#f4f8ff;border-radius:8px;padding:12px 14px;color:#263b62;margin:14px 0}.warn{border-left-color:var(--color-warn);background:#fffbeb;color:#713f12}.ok{border-left-color:var(--color-ok);background:#f0fdf4;color:#14532d}
+    .footer{display:flex;justify-content:space-between;gap:12px;margin-top:28px;padding-top:18px;border-top:1px solid var(--color-border)}
+    .tabs{display:flex;gap:8px;overflow:auto;padding-bottom:8px;margin:18px 0}.tab{border:1px solid transparent;background:transparent;color:var(--color-muted);padding:7px 10px;border-radius:8px;white-space:nowrap;cursor:pointer}.tab.active{background:var(--color-surface);border-color:var(--color-border);color:#111;font-weight:650}
+    pre.preview{background:#111;color:#f6f6f6;border-radius:var(--radius);padding:18px;overflow:auto;white-space:pre-wrap;line-height:1.55;font-size:13px;min-height:360px}.quality-grid{display:grid;grid-template-columns:1fr;gap:12px}@media(min-width:760px){.quality-grid{grid-template-columns:repeat(3,1fr)}}
+    .metric{padding:14px;border:1px solid var(--color-border);border-radius:var(--radius);background:var(--color-surface)}.metric strong{display:block;font-size:24px}.metric span{font-size:12px;color:var(--color-muted)}
+  </style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const STORAGE_KEY='projectspec_pro_v1';
+const DOCS=[
+  ['agents','AGENTS.md'],['product','PRODUCT.md'],['requirements','REQUIREMENTS.md'],['userStories','USER_STORIES.md'],['acceptance','ACCEPTANCE_CRITERIA.md'],['architecture','ARCHITECTURE.md'],['domainModel','DOMAIN_MODEL.md'],['database','DATABASE.md'],['openapi','openapi.json'],['testing','TESTING.md'],['roadmap','ROADMAP.md'],['decisions','DECISIONS.md'],['risks','RISKS.md'],['glossary','GLOSSARY.md']
+];
+const STEPS=[
+ {id:'general',title:'Información General',desc:'Identidad, tipo de producto y objetivo.',fields:[
+  f('name','Nombre del proyecto','text','Ej. ProjectSpec',true),
+  f('projectType','Tipo de aplicación','select','',true,['SaaS','Dashboard interno','E-commerce','Marketplace','App educativa','Sistema de gestión','Landing + formulario','API / Backend','Otro']),
+  f('description','Descripción corta','textarea','¿Qué es y qué hace en 2-3 líneas?',true),
+  f('objective','Objetivo principal','textarea','¿Qué resultado concreto debe lograr?',true),
+  f('successMetrics','Métricas de éxito','textarea','Ej. Reducir tiempo de carga de requerimientos 50%, generar specs completas en menos de 30 min.',false)
+ ]},
+ {id:'product',title:'Producto',desc:'Problema, usuarios, valor y límites.',fields:[
+  f('targetAudience','Público objetivo','textarea','Quién usa la app, contexto, nivel técnico, frecuencia de uso.',true),
+  f('problem','Problema que resuelve','textarea','Dolor actual, costo de no resolverlo, proceso actual.',true),
+  f('valueProposition','Propuesta de valor','textarea','Por qué esta solución es mejor o más práctica.',true),
+  f('mvpScope','Alcance del MVP','textarea','Qué SÍ entra en la primera versión.',true),
+  f('outOfScope','Fuera de alcance','textarea','Qué NO se hará todavía.',false),
+  f('businessRules','Reglas de negocio críticas','textarea','Reglas inviolables del dominio.',true)
+ ]},
+ {id:'requirements',title:'Requerimientos',desc:'Roles, funcionalidades y condiciones de aceptación.',fields:[
+  f('rolesMatrix','Matriz de permisos por rol','textarea','Admin: CRUD total. Operador: sólo crear movimientos.',true),
+  f('functionalReqs','Requerimientos funcionales','textarea','F1: El usuario puede crear... F2: El sistema permite...',true),
+  f('nonFunctionalReqs','Requerimientos no funcionales','textarea','Performance, seguridad, disponibilidad, accesibilidad, escalabilidad.',false),
+  f('useCases','Casos de uso principales','textarea','Caso 1: Registrar salida. Actor, pasos, alternativas, errores.',true),
+  f('acceptanceCriteria','Criterios de aceptación','textarea','Dado/Cuando/Entonces o checklist verificable.',false)
+ ]},
+ {id:'ui',title:'UX/UI',desc:'Interfaz, navegación y experiencia.',fields:[
+  f('designSystem','Sistema de diseño / referencia','text','Ej. Bootstrap, Tailwind, Apple HIG',false,['Bootstrap','Tailwind CSS','Material Design','Apple HIG','Shadcn UI','Minimalista propio']),
+  f('theme','Tema y estilo visual','text','Ej. Minimalista, claro, alto contraste.',false,['Modo claro','Modo oscuro','Mobile first','Minimalista monocromático','Dashboard con tarjetas']),
+  f('mainScreens','Pantallas principales','textarea','Ej. Login, dashboard, listado, detalle, formulario, configuración.',true),
+  f('mainFlows','Flujos principales','textarea','Ej. Crear proyecto → completar spec → revisar calidad → exportar.',false)
+ ]},
+ {id:'architecture',title:'Arquitectura',desc:'Stack, patrón, auth, deploy y estructura.',fields:[
+  f('pattern','Patrón arquitectónico','text','Ej. Monolito modular MVC',true,['Monolito modular','MVC','Hexagonal','Serverless','JAMstack','Microservicios']),
+  f('stackDefinitive','Stack tecnológico definitivo','textarea','Frontend, backend, DB, ORM, estilos, testing.',true,['HTML, CSS y JS Vanilla','Flask + SQLite','Node + Express + MySQL','React + Vite','Next.js + Prisma']),
+  f('authProvider','Autenticación y sesiones','text','Ej. JWT HTTP-only cookies, Supabase Auth, OAuth2.',false,['JWT custom','Session cookies','Supabase Auth','Firebase Auth','Clerk','OAuth2']),
+  f('deployment','Estrategia de despliegue','textarea','Vercel, VPS, Docker, Render, CI/CD.',false),
+  f('folderStructure','Estructura de directorios','textarea','src/\n ├── components/\n ├── services/\n └── ...',false)
+ ]},
+ {id:'domain',title:'Modelo de Dominio',desc:'Entidades, relaciones, estados y eventos.',fields:[
+  f('entities','Entidades principales','textarea','Ej. User, Project, Requirement, Document, Export.',true),
+  f('relationships','Relaciones entre entidades','textarea','Ej. Un Project tiene muchos Requirement.',false),
+  f('states','Estados importantes','textarea','Ej. draft, ready_for_review, approved, exported.',false),
+  f('domainEvents','Eventos de dominio','textarea','Ej. SpecCompleted, DocumentExported.',false)
+ ]},
+ {id:'database',title:'Base de Datos',desc:'Motor, esquema y reglas de persistencia.',fields:[
+  f('dbType','Motor de base de datos','text','Ej. PostgreSQL, MySQL, SQLite.',false,['PostgreSQL','MySQL 8','SQLite','MongoDB','Redis']),
+  f('schemaDetails','Esquema detallado','textarea','Prisma, SQL o descripción de tablas/colecciones.',false),
+  f('dataSensitivity','Datos sensibles','textarea','Qué datos requieren protección, cifrado, anonimización o control de acceso.',false)
+ ]},
+ {id:'api',title:'API',desc:'Endpoints, contratos y errores.',fields:[
+  f('apiStyle','Estilo de API','text','REST, GraphQL, RPC, Server Actions.',false,['REST','GraphQL','RPC','Server Actions','Sin API externa']),
+  f('openapiJson','OpenAPI JSON','textarea','Pegá o generá una especificación OpenAPI válida.',false),
+  f('errorModel','Modelo de errores','textarea','Ej. RFC 7807, códigos HTTP, mensajes consistentes.',false)
+ ]},
+ {id:'testing',title:'Testing',desc:'Pruebas, coverage y definición de terminado.',fields:[
+  f('framework','Framework de testing','text','Ej. Vitest, PyTest, Playwright.',false,['Vitest','Jest','PyTest','Playwright','Cypress']),
+  f('conventions','Convenciones de tests','textarea','Dónde van los tests, nomenclatura, mocks.',false),
+  f('definitionOfDone','Definition of Done','textarea','Qué condiciones debe cumplir una tarea para estar lista.',true)
+ ]},
+ {id:'planning',title:'Roadmap y Decisiones',desc:'Plan de evolución, riesgos y decisiones técnicas.',fields:[
+  f('roadmap','Roadmap','textarea','MVP, V2, V3. Qué entra en cada etapa.',false),
+  f('decisions','Decisiones tomadas','textarea','ADR simples: decisión, contexto, consecuencia.',false),
+  f('risks','Riesgos y supuestos','textarea','Riesgos técnicos, de producto, de UX y de negocio.',false)
+ ]},
+ {id:'agentRules',title:'Reglas para Agentes IA',desc:'Instrucciones para Claude Code, OpenCode, Cursor, Copilot y similares.',fields:[
+  f('codingStyles','Estilos de codificación','textarea','Convenciones de nombres, arquitectura, patrones permitidos.',true,['Clean Code','SOLID','Tipado estricto','PEP 8','Airbnb JS Style Guide']),
+  f('behaviorRules','Reglas técnicas de comportamiento','textarea','Qué puede y no puede hacer el agente.',true,['No instalar dependencias sin justificar','Validar inputs','OWASP Top 10','Errores centralizados','Tests antes de finalizar']),
+  f('forbiddenActions','Acciones prohibidas','textarea','Ej. No borrar archivos sin permiso. No cambiar stack. No exponer secretos.',false)
+ ]},
+ {id:'glossary',title:'Glosario',desc:'Lenguaje del dominio y términos prohibidos.',fields:[
+  f('terms','Términos de dominio','textarea','- Requerimiento: Requirement\n- Especificación: Spec',false),
+  f('forbiddenTerms','Términos a evitar','textarea','Palabras ambiguas o traducciones que no deben usarse.',false)
+ ]}
+];
+function f(name,label,type,placeholder='',required=false,suggestions=[]){return{name,label,type,placeholder,required,suggestions}}
+const EXAMPLES={inventory:{general:{name:'InventarioPro',projectType:'Sistema de gestión',description:'Sistema de gestión de inventario en tiempo real para centros logísticos.',objective:'Garantizar control exacto de existencias, trazabilidad por usuario y alertas de reabastecimiento.',successMetrics:'Reducir errores de stock un 70%. Registrar movimientos en menos de 30 segundos. Mantener trazabilidad completa.'},product:{targetAudience:'Operarios de almacén y gerentes logísticos.',problem:'Registros manuales propensos a errores, falta de visibilidad del stock y pérdida de trazabilidad.',valueProposition:'Control de stock simple, auditable y seguro.',mvpScope:'Login, productos, movimientos, roles, dashboard básico y exportación CSV.',outOfScope:'Integración con ERP, app mobile nativa, analítica avanzada.',businessRules:'El stock nunca puede ser negativo. Todo movimiento requiere usuario. Los productos se desactivan, no se eliminan.'},requirements:{rolesMatrix:'Admin: CRUD total. Operador: crear movimientos y ver productos. Auditor: sólo lectura.',functionalReqs:'F1: Login seguro.\nF2: CRUD de productos.\nF3: Registrar entradas/salidas.\nF4: Reporte de movimientos.',nonFunctionalReqs:'NF1: Respuesta menor a 300ms en operaciones comunes.\nNF2: Auditoría completa.',useCases:'Caso: Registrar salida. Actor: Operador. Pasos: seleccionar producto, ingresar cantidad, validar stock, confirmar, registrar movimiento.',acceptanceCriteria:'Dado un producto con stock 10, cuando el operador retira 3, entonces el stock final debe ser 7 y debe existir un movimiento OUT.'},ui:{designSystem:'Bootstrap',theme:'Minimalista, modo claro, dashboard con tarjetas.',mainScreens:'Login, Dashboard, Productos, Movimientos, Usuarios, Reportes.',mainFlows:'Login → Dashboard → Crear movimiento → Confirmar → Ver stock actualizado.'},architecture:{pattern:'Monolito modular MVC',stackDefinitive:'Frontend: React + Vite. Backend: Node + Express. DB: MySQL. ORM: Prisma.',authProvider:'JWT en HTTP-only cookies',deployment:'Backend en Render, Frontend en Vercel, DB MySQL gestionada.',folderStructure:'src/\n├── controllers/\n├── services/\n├── repositories/\n├── routes/\n└── middlewares/'},domain:{entities:'User, Product, Movement, Category, AuditLog',relationships:'User crea muchos Movement. Product tiene muchos Movement. Category tiene muchos Product.',states:'Product: active/inactive. Movement: confirmed/cancelled.',domainEvents:'MovementCreated, StockUpdated, ProductDeactivated'},database:{dbType:'MySQL 8',schemaDetails:'User(id,email,passwordHash,role)\nProduct(id,sku,name,currentStock,minStock,isActive)\nMovement(id,productId,userId,type,quantity,createdAt)',dataSensitivity:'Contraseñas hasheadas, logs de auditoría, IDs de usuario.'},api:{apiStyle:'REST',openapiJson:'',errorModel:'Errores JSON con code, message y details. 400 validación, 401 auth, 403 permisos, 404 no encontrado.'},testing:{framework:'Vitest + Supertest + Playwright',conventions:'Tests en __tests__. Nombres *.spec.ts. Coverage mínimo 80% en services.',definitionOfDone:'Código implementado, validado, con tests, sin errores de lint, documentación actualizada.'},planning:{roadmap:'MVP: auth, productos, movimientos.\nV2: reportes y alertas.\nV3: integración ERP.',decisions:'Usar monolito modular para reducir complejidad inicial. Usar MySQL por disponibilidad del equipo.',risks:'Riesgo de concurrencia en movimientos. Riesgo de roles mal definidos.'},agentRules:{codingStyles:'Usar camelCase en JS/TS. Separar controllers, services y repositories. No lógica de negocio en rutas.',behaviorRules:'Usar transacciones en movimientos de stock. Validar inputs. Manejar errores centralizados. No devolver stack al cliente.',forbiddenActions:'No cambiar stack sin justificar. No borrar migraciones. No exponer secrets.'},glossary:{terms:'Stock: existencias actuales\nMovement: movimiento de stock\nOperator: usuario operativo',forbiddenTerms:'Depósito como Store. Usar Warehouse si corresponde.'}}};
+function blankData(){const data={};STEPS.forEach(s=>{data[s.id]={};s.fields.forEach(x=>data[s.id][x.name]='')});return data}
+let state={view:'landing',step:0,tab:'agents',data:blankData(),errors:{}};
+function load(){try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');if(saved?.data)state={...state,...saved,errors:{}}}catch(e){console.warn(e)}}
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify({view:state.view,step:state.step,tab:state.tab,data:state.data}))}
+function esc(s=''){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function completion(){let total=0,filled=0,required=0,requiredFilled=0;STEPS.forEach(s=>s.fields.forEach(field=>{total++; const v=(state.data[s.id]?.[field.name]||'').trim(); if(v)filled++; if(field.required){required++; if(v)requiredFilled++}}));return{total,filled,required,requiredFilled,percent:Math.round((filled/total)*100),requiredPercent:Math.round((requiredFilled/required)*100)}}
+function validate(){const errors={};STEPS.forEach(s=>s.fields.forEach(field=>{const v=(state.data[s.id]?.[field.name]||'').trim(); if(field.required&&!v)errors[`${s.id}.${field.name}`]='Campo recomendado para una spec útil.'; if(field.name==='openapiJson'&&v){try{JSON.parse(v)}catch(e){errors[`${s.id}.${field.name}`]='El JSON no es válido.'}} }));state.errors=errors;return errors}
+function qualityIssues(){validate();const d=state.data,issues=[];const need=(cond,msg)=>{if(cond)issues.push(msg)};need(!d.product?.mvpScope?.trim(),'Falta definir alcance del MVP.');need(!d.product?.outOfScope?.trim(),'Falta explicitar fuera de alcance.');need(!d.requirements?.acceptanceCriteria?.trim(),'Faltan criterios de aceptación verificables.');need(!d.domain?.entities?.trim(),'Falta modelo de dominio con entidades.');need(!d.testing?.definitionOfDone?.trim(),'Falta Definition of Done.');need(d.api?.apiStyle==='REST'&&!d.api?.errorModel?.trim(),'Si usás REST, conviene definir modelo de errores.');return issues}
+function stepDone(i){const s=STEPS[i];return s.fields.filter(x=>x.required).every(x=>(state.data[s.id]?.[x.name]||'').trim())}
+function renderShell(inner,side=true){return `<header class="header"><div class="brand" data-action="home">ProjectSpec Pro</div><div class="header-actions"><button class="btn btn-secondary secondary-small" data-action="preview">Vista previa</button><button class="btn btn-secondary" data-action="export-md">Exportar MD</button><button class="btn btn-primary" data-action="export">Exportar ZIP</button></div></header><main class="main">${side?renderSidebar():''}<section class="content">${renderMobileStepper()}${inner}</section></main>`}
+function renderSidebar(){return `<aside class="sidebar">${STEPS.map((s,i)=>`<button class="side-item ${i===state.step&&state.view==='wizard'?'active':''} ${stepDone(i)?'done':''}" data-action="step" data-index="${i}"><span>${i+1}. ${esc(s.title)}</span><span class="dot"></span></button>`).join('')}<button class="side-item ${state.view==='preview'?'active':''}" data-action="preview"><span>✓ Vista previa</span><span class="dot"></span></button></aside>`}
+function renderMobileStepper(){return `<div class="mobile-stepper">${STEPS.map((s,i)=>`<div class="mobile-step ${i===state.step?'active':''} ${stepDone(i)?'done':''}" title="${esc(s.title)}"></div>`).join('')}</div>`}
+function renderLanding(){const c=completion();return `<header class="header"><div class="brand">ProjectSpec Pro</div></header><main class="hero"><h1>Especificaciones vivas para desarrollo con IA.</h1><p>Guiá producto, arquitectura, requisitos y reglas para agentes. Exportá documentación lista para Claude Code, OpenCode, Cursor, Copilot y OpenClaw.</p><div class="hero-actions"><button class="btn btn-primary" data-action="start">Crear nuevo proyecto</button><button class="btn btn-secondary" data-action="example">Cargar ejemplo</button>${c.filled?'<button class="btn btn-secondary" data-action="continue">Continuar guardado</button>':''}</div></main>`}
+function renderWizard(){validate();const s=STEPS[state.step];const c=completion();return renderShell(`<div class="progress"><div class="progress-fill" style="width:${((state.step)/(STEPS.length))*100}%"></div></div><div class="grid two-col"><div><h2>${esc(s.title)}</h2><p>${esc(s.desc)}</p><div class="card" style="margin-top:20px">${s.fields.map(field=>renderField(s,field)).join('')}<div class="footer"><button class="btn btn-secondary ${state.step===0?'hidden':''}" data-action="prev">Atrás</button><div></div><button class="btn btn-primary" data-action="next">${state.step===STEPS.length-1?'Finalizar':'Siguiente'}</button></div></div></div><aside>${renderQualityPanel(c)}</aside></div>`)}
+function renderField(step,field){const key=`${step.id}.${field.name}`, val=state.data[step.id]?.[field.name]||'', err=state.errors[key];let control='';if(field.type==='textarea')control=`<textarea class="textarea" data-input="1" data-step="${step.id}" data-field="${field.name}" placeholder="${esc(field.placeholder)}">${esc(val)}</textarea>`;else if(field.type==='select')control=`<select class="select" data-input="1" data-step="${step.id}" data-field="${field.name}"><option value="">Seleccionar...</option>${field.suggestions.map(o=>`<option ${val===o?'selected':''}>${esc(o)}</option>`).join('')}</select>`;else control=`<input class="input" data-input="1" data-step="${step.id}" data-field="${field.name}" value="${esc(val)}" placeholder="${esc(field.placeholder)}" />`;const chips=field.type!=='select'&&field.suggestions?.length?`<div class="chips">${field.suggestions.map(x=>`<button class="chip" data-action="chip" data-step="${step.id}" data-field="${field.name}" data-value="${esc(x)}">${esc(x)}</button>`).join('')}</div>`:'';return `<div class="field ${err?'error':''}"><div class="label-row"><label class="label">${esc(field.label)}</label>${field.required?'<span class="req">recomendado</span>':'<span class="help">opcional</span>'}</div>${control}${chips}${err?`<div class="field-message">${esc(err)}</div>`:''}</div>`}
+function renderQualityPanel(c){const issues=qualityIssues();return `<div class="card"><div class="score-wrap"><div class="score-ring" style="--score:${c.percent}%"><span>${c.percent}</span></div><div><h3>Calidad de spec</h3><p>${c.requiredFilled}/${c.required} campos clave completos.</p></div></div><ul class="score-list">${issues.slice(0,6).map(i=>`<li>• ${esc(i)}</li>`).join('')||'<li>• La especificación tiene una base sólida.</li>'}</ul><div class="notice ${issues.length?'warn':'ok'}">${issues.length?'La app puede exportar igual, pero estos puntos mejoran mucho el resultado para agentes IA.':'Lista para exportar y usar como base de desarrollo.'}</div><button class="btn btn-secondary" data-action="auto-improve" style="width:100%">Sugerir mejoras rápidas</button></div>`}
+const md={
+agents:d=>`# AGENTS.md\n\n## Project Context\nProyecto: ${v(d.general.name)}\nTipo: ${v(d.general.projectType)}\nDescripción: ${v(d.general.description)}\n\n## Tech Stack\n${v(d.architecture.stackDefinitive)}\n\n## Architecture Rules\n${v(d.architecture.pattern)}\n\n## Coding Standards\n${v(d.agentRules.codingStyles)}\n\n## Behavior Rules\n${v(d.agentRules.behaviorRules)}\n\n## Forbidden Actions\n${v(d.agentRules.forbiddenActions)}\n\n## Definition of Done\n${v(d.testing.definitionOfDone)}\n`,
+product:d=>`# PRODUCT.md\n\n## Visión\n${v(d.general.objective)}\n\n## Métricas de éxito\n${v(d.general.successMetrics)}\n\n## Público objetivo\n${v(d.product.targetAudience)}\n\n## Problema\n${v(d.product.problem)}\n\n## Propuesta de valor\n${v(d.product.valueProposition)}\n\n## MVP Scope\n${v(d.product.mvpScope)}\n\n## Out of Scope\n${v(d.product.outOfScope)}\n\n## Reglas de negocio\n${v(d.product.businessRules)}\n`,
+requirements:d=>`# REQUIREMENTS.md\n\n## Roles y permisos\n${v(d.requirements.rolesMatrix)}\n\n## Requerimientos funcionales\n${v(d.requirements.functionalReqs)}\n\n## Requerimientos no funcionales\n${v(d.requirements.nonFunctionalReqs)}\n\n## Casos de uso\n${v(d.requirements.useCases)}\n`,
+userStories:d=>`# USER_STORIES.md\n\n> Generadas como base a partir de roles, casos de uso y alcance.\n\n${stories(d)}\n`,
+acceptance:d=>`# ACCEPTANCE_CRITERIA.md\n\n${v(d.requirements.acceptanceCriteria)}\n\n## Checklist mínimo\n- [ ] Cada historia tiene criterio Dado/Cuando/Entonces.\n- [ ] Cada regla de negocio tiene prueba asociada.\n- [ ] Los errores principales están contemplados.\n`,
+architecture:d=>`# ARCHITECTURE.md\n\n## Patrón\n${v(d.architecture.pattern)}\n\n## Stack\n${v(d.architecture.stackDefinitive)}\n\n## Autenticación\n${v(d.architecture.authProvider)}\n\n## Deploy\n${v(d.architecture.deployment)}\n\n## Estructura\n\n\`\`\`txt\n${v(d.architecture.folderStructure)}\n\`\`\`\n`,
+domainModel:d=>`# DOMAIN_MODEL.md\n\n## Entidades\n${v(d.domain.entities)}\n\n## Relaciones\n${v(d.domain.relationships)}\n\n## Estados\n${v(d.domain.states)}\n\n## Eventos\n${v(d.domain.domainEvents)}\n\n## Diagrama Mermaid sugerido\n\n\`\`\`mermaid\nerDiagram\n${mermaid(d)}\n\`\`\`\n`,
+database:d=>`# DATABASE.md\n\n## Motor\n${v(d.database.dbType)}\n\n## Esquema\n\n\`\`\`txt\n${v(d.database.schemaDetails)}\n\`\`\`\n\n## Datos sensibles\n${v(d.database.dataSensitivity)}\n`,
+openapi:d=>d.api.openapiJson?.trim()||JSON.stringify({openapi:'3.0.0',info:{title:d.general.name||'ProjectSpec API',version:'0.1.0'},paths:{}},null,2),
+testing:d=>`# TESTING.md\n\n## Frameworks\n${v(d.testing.framework)}\n\n## Convenciones\n${v(d.testing.conventions)}\n\n## Definition of Done\n${v(d.testing.definitionOfDone)}\n`,
+roadmap:d=>`# ROADMAP.md\n\n${v(d.planning.roadmap)}\n\n## Sugerencia\n- MVP: resolver el flujo principal completo.\n- V2: mejorar calidad, reportes e integraciones.\n- V3: automatización, colaboración y escalabilidad.\n`,
+decisions:d=>`# DECISIONS.md\n\n${v(d.planning.decisions)}\n\n## Formato recomendado\n### ADR-001: Título\n- Contexto:\n- Decisión:\n- Consecuencias:\n`,
+risks:d=>`# RISKS.md\n\n${v(d.planning.risks)}\n\n## Checklist\n- [ ] Riesgos técnicos identificados.\n- [ ] Riesgos de UX identificados.\n- [ ] Supuestos explicitados.\n`,
+glossary:d=>`# GLOSSARY.md\n\n## Términos\n${v(d.glossary.terms)}\n\n## Términos prohibidos o ambiguos\n${v(d.glossary.forbiddenTerms)}\n`
+};
+function v(x){return x?.trim()||'No definido'}
+function stories(d){const roles=(d.requirements.rolesMatrix||'Usuario').split('\n').filter(Boolean).slice(0,4);const flows=(d.requirements.useCases||d.product.mvpScope||'usar el sistema').split('\n').filter(Boolean).slice(0,5);return flows.map((flow,i)=>`## Historia ${i+1}\nComo usuario del sistema, quiero ${flow.replace(/^[-*\d. ]+/,'')}, para obtener valor del producto.\n\n### Criterios\n- [ ] Escenario principal definido.\n- [ ] Validaciones definidas.\n- [ ] Error esperado definido.\n`).join('\n')}
+function mermaid(d){const ents=(d.domain.entities||'User, Project, Requirement').split(/[\n,]/).map(x=>x.trim()).filter(Boolean).slice(0,8);return ents.map(e=>`  ${e.replace(/\W/g,'_')} {\n    string id\n  }`).join('\n')}
+function renderPreview(){validate();const c=completion(), issues=qualityIssues();const label=DOCS.find(([k])=>k===state.tab)?.[1]||'Documento';return renderShell(`<h2>Vista previa de documentos</h2><p>Exportación ampliada para Spec-Driven Development y agentes IA.</p><div class="quality-grid"><div class="metric"><strong>${c.percent}%</strong><span>Completitud general</span></div><div class="metric"><strong>${c.requiredPercent}%</strong><span>Campos clave</span></div><div class="metric"><strong>${issues.length}</strong><span>Alertas de calidad</span></div></div><div class="tabs">${DOCS.map(([k,l])=>`<button class="tab ${state.tab===k?'active':''}" data-action="tab" data-tab="${k}">${l}</button>`).join('')}</div><div class="label-row"><h3>${label}</h3><button class="btn btn-secondary" data-action="copy">Copiar</button></div><pre class="preview" id="previewText">${esc(md[state.tab](state.data))}</pre><div class="footer"><button class="btn btn-secondary" data-action="step" data-index="${state.step}">Editar</button><button class="btn btn-secondary" data-action="export-md">Exportar MD</button><button class="btn btn-primary" data-action="export">Exportar ZIP</button></div>`)}
+function render(){const app=document.getElementById('app');if(state.view==='landing')app.innerHTML=renderLanding();else if(state.view==='preview')app.innerHTML=renderPreview();else app.innerHTML=renderWizard();save()}
+document.addEventListener('input',e=>{const t=e.target;if(t.dataset.input){state.data[t.dataset.step][t.dataset.field]=t.value;render()}});
+document.addEventListener('click',async e=>{const t=e.target.closest('[data-action]');if(!t)return;const a=t.dataset.action;if(a==='home'){state.view='landing'} if(a==='start'){state.data=blankData();state.step=0;state.view='wizard'} if(a==='continue'){state.view='wizard'} if(a==='example'){state.data=JSON.parse(JSON.stringify(EXAMPLES.inventory));state.step=0;state.view='wizard'} if(a==='step'){state.step=Number(t.dataset.index);state.view='wizard'} if(a==='next'){if(state.step<STEPS.length-1)state.step++;else state.view='preview'} if(a==='prev'){state.step=Math.max(0,state.step-1)} if(a==='preview'){state.view='preview'} if(a==='tab'){state.tab=t.dataset.tab} if(a==='chip'){const cur=state.data[t.dataset.step][t.dataset.field]||'';state.data[t.dataset.step][t.dataset.field]=cur+(cur?', ':'')+t.dataset.value} if(a==='auto-improve'){autoImprove()} if(a==='copy'){await navigator.clipboard.writeText(md[state.tab](state.data));alert('Documento copiado.')} if(a==='export-md'){exportAsSingleMarkdown();return} if(a==='export'){exportZip();return} render()});
+function autoImprove(){const d=state.data;if(!d.product.outOfScope)d.product.outOfScope='No incluye integraciones externas, pagos, app mobile nativa ni analítica avanzada en el MVP.';if(!d.requirements.acceptanceCriteria)d.requirements.acceptanceCriteria='Dado un usuario autorizado, cuando completa una acción principal, entonces el sistema valida datos, guarda cambios y muestra feedback claro.\nDado un dato inválido, cuando intenta guardar, entonces el sistema bloquea la acción y explica el error.';if(!d.testing.definitionOfDone)d.testing.definitionOfDone='Una tarea está terminada cuando cumple criterios de aceptación, tiene validaciones, manejo de errores, pruebas básicas y documentación actualizada.';if(!d.planning.risks)d.planning.risks='Riesgo de alcance demasiado amplio. Riesgo de requerimientos ambiguos. Riesgo de baja calidad si no se definen criterios verificables.'}
+function safeFileName(name){return String(name||'ProjectSpec').trim().replace(/[\\/:*?"<>|]/g,'_').replace(/\s+/g,'_')||'ProjectSpec'}
+function downloadBlob(blob,fileName){
+  console.log('[ProjectSpec] downloadBlob()', {fileName, size: blob?.size, type: blob?.type});
+  if(!blob || !blob.size){ throw new Error('Blob vacío o inválido'); }
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  a.rel = 'noopener';
+  a.style.position = 'fixed';
+  a.style.left = '-9999px';
+  a.style.top = '-9999px';
+  document.body.appendChild(a);
+  const event = new MouseEvent('click', { bubbles:true, cancelable:true, view:window });
+  a.dispatchEvent(event);
+  setTimeout(()=>{ a.remove(); URL.revokeObjectURL(url); }, 4000);
+  return true;
+}
+function collectFiles(){const projectName=safeFileName(state.data.general?.name||'ProjectSpec');const base=`${projectName}_Docs/`;const files={};DOCS.forEach(([k,l])=>{files[base+l]=md[k](state.data)});files[base+'README.md']=`# ${state.data.general?.name||'ProjectSpec'}
+
+Documentación generada con ProjectSpec Pro.
+
+## Calidad
+- Completitud: ${completion().percent}%
+- Alertas: ${qualityIssues().length}
+`;return{projectName,files}}
+function exportZip(){
+  console.log('[ProjectSpec] exportZip iniciado');
+  try{
+    const {projectName,files}=collectFiles();
+    console.log('[ProjectSpec] archivos a exportar:', Object.keys(files));
+    const blob=createZipBlob(files);
+    console.log('[ProjectSpec] ZIP generado:', blob, 'size:', blob.size);
+    downloadBlob(blob,`${projectName}_ProjectSpec_Pro.zip`);
+    setTimeout(()=>alert('Exportación iniciada. Si el ZIP no aparece en Descargas, usá “Exportar MD”.'),50);
+  }catch(error){
+    console.error('[ProjectSpec] Error exportando ZIP:',error);
+    try{
+      exportAsSingleMarkdown();
+      alert('No se pudo exportar ZIP. Se descargó un Markdown único como respaldo.');
+    }catch(e){
+      console.error('[ProjectSpec] También falló la exportación alternativa:',e);
+      alert('No se pudo exportar. Revisá la consola del navegador.');
+    }
+  }
+}
+function exportAsSingleMarkdown(){const {projectName,files}=collectFiles();const content=Object.entries(files).map(([name,text])=>`# FILE: ${name}\n\n${text}`).join('\n\n---\n\n');downloadBlob(new Blob([content],{type:'text/markdown;charset=utf-8'}),`${projectName}_ProjectSpec_DOCUMENTOS.md`)}
+function createZipBlob(files){const encoder=new TextEncoder();const chunks=[];const central=[];let offset=0;const now=new Date();const dosTime=((now.getHours()<<11)|(now.getMinutes()<<5)|(Math.floor(now.getSeconds()/2)))&0xffff;const dosDate=(((now.getFullYear()-1980)<<9)|((now.getMonth()+1)<<5)|now.getDate())&0xffff;for(const [name,content] of Object.entries(files)){const nameBytes=encoder.encode(name);const data=encoder.encode(content);const crc=crc32(data);const local=concatBytes(u32(0x04034b50),u16(20),u16(0),u16(0),u16(dosTime),u16(dosDate),u32(crc),u32(data.length),u32(data.length),u16(nameBytes.length),u16(0),nameBytes,data);chunks.push(local);central.push({nameBytes,crc,size:data.length,offset});offset+=local.length}let centralSize=0;for(const f of central){const c=concatBytes(u32(0x02014b50),u16(20),u16(20),u16(0),u16(0),u16(dosTime),u16(dosDate),u32(f.crc),u32(f.size),u32(f.size),u16(f.nameBytes.length),u16(0),u16(0),u16(0),u16(0),u32(0),u32(f.offset),f.nameBytes);chunks.push(c);centralSize+=c.length}const endRecord=concatBytes(u32(0x06054b50),u16(0),u16(0),u16(central.length),u16(central.length),u32(centralSize),u32(offset),u16(0));chunks.push(endRecord);return new Blob(chunks,{type:'application/zip'})}
+function concatBytes(...arrays){const total=arrays.reduce((n,a)=>n+a.length,0);const out=new Uint8Array(total);let pos=0;for(const a of arrays){out.set(a,pos);pos+=a.length}return out}
+function u16(n){const b=new Uint8Array(2);new DataView(b.buffer).setUint16(0,n,true);return b}
+function u32(n){const b=new Uint8Array(4);new DataView(b.buffer).setUint32(0,n>>>0,true);return b}
+let CRC_TABLE=null;function makeCrcTable(){const table=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?(0xedb88320^(c>>>1)):(c>>>1);table[n]=c>>>0}return table}
+function crc32(data){if(!CRC_TABLE)CRC_TABLE=makeCrcTable();let c=0xffffffff;for(let i=0;i<data.length;i++)c=CRC_TABLE[(c^data[i])&0xff]^(c>>>8);return(c^0xffffffff)>>>0}
+load();render();
+</script>
+</body>
+</html>
