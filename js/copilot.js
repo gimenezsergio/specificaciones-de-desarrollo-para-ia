@@ -61,6 +61,7 @@ function initSpeechRecognition() {
 
   copilotRecognition = new SpeechRecognition();
   copilotRecognition.lang = 'es-ES';
+  copilotRecognition.continuous = true;
   copilotRecognition.interimResults = false;
   copilotRecognition.maxAlternatives = 1;
 
@@ -83,10 +84,15 @@ function initSpeechRecognition() {
   };
 
   copilotRecognition.onresult = (event) => {
-    const text = event.results[0][0].transcript;
+    let finalTranscript = '';
+    for (let i = event.resultIndex; i < event.results.length; ++i) {
+      if (event.results[i].isFinal) {
+        finalTranscript += event.results[i][0].transcript + ' ';
+      }
+    }
     const input = document.getElementById('copilotInput');
-    if (input) {
-      input.value = (input.value ? input.value + ' ' : '') + text;
+    if (input && finalTranscript) {
+      input.value = (input.value ? input.value.trim() + ' ' : '') + finalTranscript.trim();
     }
   };
 
@@ -359,6 +365,9 @@ function bindCopilotEvents() {
     const handleSend = () => {
       const text = input.value;
       input.value = '';
+      if (copilotIsListening && copilotRecognition) {
+        copilotRecognition.stop();
+      }
       sendCopilotMessage(text);
     };
 
