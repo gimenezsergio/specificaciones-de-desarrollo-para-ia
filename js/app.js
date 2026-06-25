@@ -236,7 +236,7 @@ function renderShell(inner, side = true) {
 }
 
 function renderSidebar() {
-  return `<aside class="sidebar">${STEPS.map((s, i) => `<button class="side-item ${i === state.step && state.view === 'wizard' ? 'active' : ''} ${stepDone(i) ? 'done' : ''}" data-action="step" data-index="${i}"><span>${i + 1}. ${esc(s.title)}</span><span class="dot"></span></button>`).join('')}<button class="side-item ${state.view === 'preview' ? 'active' : ''}" data-action="preview"><span>✓ Vista previa</span><span class="dot"></span></button></aside>`;
+  return `<aside class="sidebar"><button class="side-item ${state.view === 'copilot' ? 'active' : ''}" data-action="copilot" style="background:#f0f7ff; border-left:4px solid var(--color-info); margin-bottom:12px; font-weight:bold; color:var(--color-info)"><span>💬 Copiloto IA (Voz/Chat)</span></button>${STEPS.map((s, i) => `<button class="side-item ${i === state.step && state.view === 'wizard' ? 'active' : ''} ${stepDone(i) ? 'done' : ''}" data-action="step" data-index="${i}"><span>${i + 1}. ${esc(s.title)}</span><span class="dot"></span></button>`).join('')}<button class="side-item ${state.view === 'preview' ? 'active' : ''}" data-action="preview"><span>✓ Vista previa</span><span class="dot"></span></button></aside>`;
 }
 
 function renderMobileStepper() {
@@ -245,7 +245,7 @@ function renderMobileStepper() {
 
 function renderLanding() {
   const c = completion();
-  return `<header class="header"><div class="brand">ProjectSpec Pro</div></header><main class="hero"><h1>Especificaciones vivas para desarrollo con IA.</h1><p>Guiá producto, arquitectura, requisitos y reglas para agentes. Exportá documentación lista para Claude Code, OpenCode, Cursor, Copilot y OpenClaw.</p><div class="hero-actions"><button class="btn btn-primary" data-action="start">Crear nuevo proyecto</button><button class="btn btn-secondary" data-action="example">Cargar ejemplo</button>${c.filled ? '<button class="btn btn-secondary" data-action="continue">Continuar guardado</button>' : ''}</div></main>`;
+  return `<header class="header"><div class="brand">ProjectSpec Pro</div></header><main class="hero"><h1>Especificaciones vivas para desarrollo con IA.</h1><p>Guiá producto, arquitectura, requisitos y reglas para agentes. Exportá documentación lista para Claude Code, OpenCode, Cursor, Copilot y OpenClaw.</p><div class="hero-actions"><button class="btn btn-primary" data-action="start">Crear nuevo proyecto</button><button class="btn btn-primary" data-action="copilot" style="background:#175cd3; border-color:#175cd3">💬 Iniciar con Copiloto IA</button><button class="btn btn-secondary" data-action="example">Cargar ejemplo</button>${c.filled ? '<button class="btn btn-secondary" data-action="continue">Continuar guardado</button>' : ''}</div></main>`;
 }
 
 function renderWizard() {
@@ -281,6 +281,10 @@ function render() {
   const app = document.getElementById('app');
   if (state.view === 'landing') app.innerHTML = renderLanding();
   else if (state.view === 'preview') app.innerHTML = renderPreview();
+  else if (state.view === 'copilot') {
+    app.innerHTML = renderShell('<div id="copilotWrapper"></div>', true);
+    updateCopilotUI();
+  }
   else app.innerHTML = renderWizard();
   save();
 }
@@ -303,6 +307,7 @@ document.addEventListener('click', async e => {
   const a = t.dataset.action;
   if (a === 'home') { state.view = 'landing'; }
   if (a === 'start') { state.data = blankData(); state.step = 0; state.view = 'wizard'; }
+  if (a === 'copilot') { state.view = 'copilot'; }
   if (a === 'continue') { state.view = 'wizard'; }
   if (a === 'example') { state.data = JSON.parse(JSON.stringify(EXAMPLES.inventory)); state.step = 0; state.view = 'wizard'; }
   if (a === 'step') { state.step = Number(t.dataset.index); state.view = 'wizard'; }
