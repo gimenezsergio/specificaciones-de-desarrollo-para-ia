@@ -18,6 +18,9 @@ def load_env():
 class SecureProxyHandler(SimpleHTTPRequestHandler):
     def do_POST(self):
         if self.path == '/api/copilot':
+            # Reload .env on every request so key changes are detected immediately
+            load_env()
+            
             content_length = int(self.headers.get('Content-Length', 0))
             post_data = self.rfile.read(content_length)
             
