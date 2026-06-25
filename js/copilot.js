@@ -175,7 +175,10 @@ async function callGeminiAPI() {
 
   if (!response.ok) {
     const errorJson = await response.json().catch(() => ({}));
-    throw new Error(errorJson.error || `HTTP ${response.status}`);
+    const errMsg = (errorJson.error && typeof errorJson.error === 'object')
+      ? (errorJson.error.message || JSON.stringify(errorJson.error))
+      : (errorJson.error || `HTTP ${response.status}`);
+    throw new Error(errMsg);
   }
 
   const result = await response.json();
