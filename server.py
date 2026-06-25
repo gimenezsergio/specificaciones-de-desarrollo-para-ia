@@ -34,8 +34,8 @@ class SecureProxyHandler(SimpleHTTPRequestHandler):
                 }).encode('utf-8'))
                 return
             
-            # Target Gemini API endpoint (1.5-flash)
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+            # Target Gemini API endpoint (2.5-flash)
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
             
             req = urllib.request.Request(
                 url,
