@@ -2,7 +2,7 @@ import os
 import json
 import urllib.request
 import urllib.error
-from http.server import SimpleHTTPRequestHandler, HTTPServer
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
 def load_env():
     """Manually parse .env file to load GEMINI_API_KEY into os.environ"""
@@ -44,7 +44,8 @@ class SecureProxyHandler(SimpleHTTPRequestHandler):
             )
             
             try:
-                with urllib.request.urlopen(req) as response:
+                # Set a 30-second timeout to prevent requests from hanging indefinitely
+                with urllib.request.urlopen(req, timeout=30) as response:
                     res_data = response.read()
                     self.send_response(200)
                     self.send_header('Content-Type', 'application/json')
@@ -72,7 +73,7 @@ class SecureProxyHandler(SimpleHTTPRequestHandler):
 def run(port=8000):
     load_env()
     server_address = ('', port)
-    httpd = HTTPServer(server_address, SecureProxyHandler)
+    httpd = ThreadingHTTPServer(server_address, SecureProxyHandler)
     print(f"Serving secure proxy and static files on http://localhost:{port}")
     try:
         httpd.serve_forever()
