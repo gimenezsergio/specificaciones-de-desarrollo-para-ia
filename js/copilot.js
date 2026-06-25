@@ -2,6 +2,34 @@ let copilotChatHistory = [];
 let copilotIsThinking = false;
 let copilotIsListening = false;
 let copilotRecognition = null;
+let copilotTtsEnabled = localStorage.getItem('copilot_tts_enabled') === 'true';
+
+function speakText(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+
+  // Clean markdown syntax for natural reading
+  const cleanText = text
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/```[\s\S]*?```/g, '(código)')
+    .replace(/[-*]\s+/g, '')
+    .replace(/#+\s+/g, '')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .trim();
+
+  const utterance = new SpeechSynthesisUtterance(cleanText);
+  utterance.lang = 'es-ES';
+
+  const voices = window.speechSynthesis.getVoices();
+  const spanishVoice = voices.find(v => v.lang.startsWith('es') && v.name.includes('Google')) || voices.find(v => v.lang.startsWith('es'));
+  if (spanishVoice) {
+    utterance.voice = spanishVoice;
+  }
+
+  window.speechSynthesis.speak(utterance);
+}
 
 const COPILOT_SYSTEM_INSTRUCTION = `Eres "ProjectSpec Copiloto", un consultor de software principal y experto en Spec-Driven Development. Tu trabajo es guiar al usuario en una entrevista interactiva para completar su especificación técnica del proyecto.
 El formulario tiene 12 secciones:
@@ -195,6 +223,12 @@ async function callGeminiAPI() {
     parts: modelMessage.parts
   });
 
+  // Speak text response if TTS is enabled
+  const textPart = modelMessage.parts.find(p => p.text)?.text;
+  if (textPart && copilotTtsEnabled) {
+    speakText(textPart);
+  }
+
   // Check if model wants to call a function
   const functionCalls = modelMessage.parts.filter(p => p.functionCall);
   if (functionCalls.length > 0) {
@@ -281,7 +315,12 @@ function renderCopilotView() {
           <h2>Entrevista con Copiloto IA</h2>
           <span class="secure-badge">🛡️ Conexión segura mediante Servidor Proxy Python</span>
         </div>
-        <button class="btn btn-secondary" data-action="step" data-index="0">Volver al Wizard</button>
+        <div style="display:flex; gap:8px; align-items:center">
+          <button class="btn ${copilotTtsEnabled ? 'btn-primary' : 'btn-secondary'}" id="copilotTtsToggle" style="${copilotTtsEnabled ? 'background:#175cd3; border-color:#175cd3' : ''}">
+            ${copilotTtsEnabled ? '🔊 Voz activa' : '🔇 Silencio'}
+          </button>
+          <button class="btn btn-secondary" data-action="step" data-index="0">Volver al Wizard</button>
+        </div>
       </div>
 
       <div class="copilot-layout">
@@ -368,6 +407,7 @@ function bindCopilotEvents() {
   const sendBtn = document.getElementById('copilotSendBtn');
   const input = document.getElementById('copilotInput');
   const micBtn = document.getElementById('copilotMicBtn');
+  const ttsToggle = document.getElementById('copilotTtsToggle');
 
   if (sendBtn && input) {
     const handleSend = () => {
@@ -387,6 +427,19 @@ function bindCopilotEvents() {
 
   if (micBtn) {
     micBtn.onclick = toggleListening;
+  }
+
+  if (ttsToggle) {
+    ttsToggle.onclick = () => {
+      copilotTtsEnabled = !copilotTtsEnabled;
+      localStorage.setItem('copilot_tts_enabled', copilotTtsEnabled);
+      if (!copilotTtsEnabled) {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+        }
+      }
+      updateCopilotUI();
+    };
   }
 }
 
