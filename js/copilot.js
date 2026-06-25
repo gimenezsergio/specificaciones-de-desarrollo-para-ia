@@ -20,12 +20,23 @@ function speakText(text) {
     .trim();
 
   const utterance = new SpeechSynthesisUtterance(cleanText);
-  utterance.lang = 'es-ES';
 
   const voices = window.speechSynthesis.getVoices();
-  const spanishVoice = voices.find(v => v.lang.startsWith('es') && v.name.includes('Google')) || voices.find(v => v.lang.startsWith('es'));
-  if (spanishVoice) {
-    utterance.voice = spanishVoice;
+  
+  // Prioritize Argentine accent (es-AR)
+  const argentineVoice = voices.find(v => {
+    const lang = v.lang.toLowerCase().replace('_', '-');
+    return lang === 'es-ar' || lang.startsWith('es-ar');
+  });
+
+  const fallbackVoice = voices.find(v => v.lang.startsWith('es') && v.name.includes('Google')) || voices.find(v => v.lang.startsWith('es'));
+  const selectedVoice = argentineVoice || fallbackVoice;
+
+  if (selectedVoice) {
+    utterance.voice = selectedVoice;
+    utterance.lang = selectedVoice.lang;
+  } else {
+    utterance.lang = 'es-AR';
   }
 
   window.speechSynthesis.speak(utterance);
