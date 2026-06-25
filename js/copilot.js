@@ -198,25 +198,30 @@ async function callGeminiAPI() {
   // Check if model wants to call a function
   const functionCalls = modelMessage.parts.filter(p => p.functionCall);
   if (functionCalls.length > 0) {
+    const responseParts = [];
     for (const call of functionCalls) {
       if (call.functionCall.name === 'updateFields') {
         const args = call.functionCall.args;
         const updatedInfo = executeUpdateFields(args.fields);
         
-        // Add function response to history and call Gemini again
-        copilotChatHistory.push({
-          role: 'user',
-          parts: [{
-            functionResponse: {
-              name: 'updateFields',
-              response: { status: 'success', updated: updatedInfo }
-            }
-          }]
+        responseParts.push({
+          functionResponse: {
+            name: 'updateFields',
+            response: { status: 'success', updated: updatedInfo }
+          }
         });
-
-        // Recursively call Gemini to let it produce the text reply matching the function call success
-        await callGeminiAPI();
       }
+    }
+
+    if (responseParts.length > 0) {
+      // Add all function responses in a single message to match Gemini's parallel tool response structure
+      copilotChatHistory.push({
+        role: 'user',
+        parts: responseParts
+      });
+
+      // A single recursive call to Gemini to let it produce the text reply matching the tools execution
+      await callGeminiAPI();
     }
   }
 }
