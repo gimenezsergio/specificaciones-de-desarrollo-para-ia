@@ -66,12 +66,20 @@ function initSpeechRecognition() {
 
   copilotRecognition.onstart = () => {
     copilotIsListening = true;
-    updateCopilotUI();
+    const micBtn = document.getElementById('copilotMicBtn');
+    if (micBtn) {
+      micBtn.classList.add('active');
+      micBtn.innerText = '🛑';
+    }
   };
 
   copilotRecognition.onend = () => {
     copilotIsListening = false;
-    updateCopilotUI();
+    const micBtn = document.getElementById('copilotMicBtn');
+    if (micBtn) {
+      micBtn.classList.remove('active');
+      micBtn.innerText = '🎙️';
+    }
   };
 
   copilotRecognition.onresult = (event) => {
@@ -85,7 +93,18 @@ function initSpeechRecognition() {
   copilotRecognition.onerror = (e) => {
     console.error('Speech recognition error:', e);
     copilotIsListening = false;
-    updateCopilotUI();
+    const micBtn = document.getElementById('copilotMicBtn');
+    if (micBtn) {
+      micBtn.classList.remove('active');
+      micBtn.innerText = '🎙️';
+    }
+    if (e.error === 'not-allowed') {
+      alert('Error de micrófono: Acceso denegado. Por favor, concede permisos de micrófono a la página en tu navegador.');
+    } else if (e.error === 'no-speech') {
+      console.warn('Speech recognition: No speech detected.');
+    } else {
+      alert('Error en el dictado por voz: ' + e.error);
+    }
   };
 }
 
